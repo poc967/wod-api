@@ -1,7 +1,10 @@
-from flask import Flask
+from flask_restx import Namespace, Api, Resource
 
-app = Flask(__name__)
+api = Namespace('wod')
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!', 200
+@api.route('/')
+class Wod(Resource):
+    def get(self):
+        return {
+            'message': 'routing is cool!'
+        }, 200
