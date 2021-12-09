@@ -6,6 +6,7 @@ from ..models import movement, work_out
 
 api = Namespace('work-out')
 
+
 @api.route('/')
 class CreateMovement(Resource):
     def post(self):
@@ -19,8 +20,14 @@ class CreateMovement(Resource):
         args = parser.parse_args()
 
         new_movement = movement.Movement(name=args['movement'])
+        new_movement.save()
+        print(new_movement.id)
+        new_work_out_movement = work_out.WorkOutMovement(
+            movement=new_movement.id, repititions=4)
+        print(new_work_out_movement)
 
-        new_work_out = work_out.WorkOut(work_out_style=args['work_out_style'], time_domain=args['time_domain'], rounds=args['rounds'], movements=[new_movement])
+        new_work_out = work_out.WorkOut(
+            work_out_style=args['work_out_style'], time_domain=args['time_domain'], rounds=args['rounds'], movements=[new_work_out_movement])
         print(new_work_out)
         new_work_out.save()
 

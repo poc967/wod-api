@@ -2,8 +2,9 @@ from enum import unique
 import mongoengine
 import datetime
 
+
 class Movement(mongoengine.Document):
-    name = mongoengine.StringField(unique=True)
+    name = mongoengine.StringField()
     is_deleted = mongoengine.BooleanField(default=False)
     created = mongoengine.DateTimeField(default=datetime.datetime.now())
 
