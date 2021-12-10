@@ -24,9 +24,13 @@ class Wod(Resource):
 
             new_work_out = work_out.WorkOut(
                 work_out_style=sub_work_out['work_out_style'],
-                time_domain=sub_work_out['time_domain'],
-                score=sub_work_out['score'],
-                notes=sub_work_out['notes']
+                time_cap=sub_work_out['time_cap'],
+                rounds=sub_work_out['rounds'] if sub_work_out.get(
+                    'rounds') else None,
+                score=sub_work_out['score'] if sub_work_out.get(
+                    'score') else None,
+                notes=sub_work_out['notes'] if sub_work_out.get(
+                    'notes') else None,
             )
 
             for individual_movement in sub_work_out['movements']:
@@ -44,7 +48,10 @@ class Wod(Resource):
                 new_work_out['movements'].append(work_out.WorkOutMovement(
                     movement=new_movement,
                     repititions=individual_movement['repititions'],
-                    notes=individual_movement['notes']
+                    notes=individual_movement['notes'] if individual_movement.get(
+                        'notes') else None,
+                    weight=individual_movement['weight'] if individual_movement.get(
+                        'weight') else None
                 )
                 )
 

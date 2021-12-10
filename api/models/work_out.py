@@ -14,6 +14,7 @@ def get_movement_document(movement_id):
 class WorkOutMovement(mongoengine.EmbeddedDocument):
     movement = mongoengine.ObjectIdField()
     repititions = mongoengine.IntField()
+    weight = mongoengine.IntField()
     notes = mongoengine.StringField()
 
     def work_out_movement_to_json(self):
@@ -22,13 +23,15 @@ class WorkOutMovement(mongoengine.EmbeddedDocument):
         return {
             'movement': movement_document.movement_to_json(),
             'repititions': self.repititions,
+            'weight': self.weight,
             'notes': self.notes
         }
 
 
 class WorkOut(mongoengine.Document):
-    work_out_style = mongoengine.StringField(choices=['AMRAP', 'For Time'])
-    time_domain = mongoengine.StringField()
+    work_out_style = mongoengine.StringField(
+        choices=['AMRAP', 'For Time', 'EMOM'])
+    time_cap = mongoengine.StringField()
     rounds = mongoengine.IntField()
     movements = mongoengine.EmbeddedDocumentListField(WorkOutMovement)
     score = mongoengine.StringField()
@@ -40,7 +43,7 @@ class WorkOut(mongoengine.Document):
 
         data = {
             'id': str(self.id),
-            'time_domain': self.time_domain,
+            'time_cap': self.time_cap,
             'is_deleted': self.is_deleted,
             'rounds': self.rounds if self.rounds else None,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],
