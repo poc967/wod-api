@@ -1,6 +1,4 @@
-from os import SCHED_OTHER
 import mongoengine
-
 from api.models import movement, work_out
 
 
@@ -12,7 +10,6 @@ def get_work_out_object(work_out_id):
 class Wod(mongoengine.Document):
     name = mongoengine.StringField()
     work_outs = mongoengine.ListField(mongoengine.ReferenceField('WorkOut'))
-    score = mongoengine.StringField()
 
     def wod_to_json(self):
         work_out_documents = []
@@ -20,11 +17,8 @@ class Wod(mongoengine.Document):
             document = get_work_out_object(ids)
             work_out_documents.append(document)
 
-        print(work_out_documents)
-
         data = {
             'name': self.name,
-            'score': self.score,
             'work_outs': [work_out_document.work_out_to_json() for work_out_document in work_out_documents]
         }
 

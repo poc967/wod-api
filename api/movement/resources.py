@@ -5,11 +5,17 @@ from ..models import movement
 
 api = Namespace('movement')
 
+
+def create_movement_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('name')
+    return parser
+
+
 @api.route('/')
 class CreateMovement(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('name')
+        parser = create_movement_parser()
         args = parser.parse_args()
 
         args['name'] = args['name'].lower()
@@ -28,8 +34,7 @@ class CreateMovement(Resource):
 
         if not movements:
             return {'error': 'An error occured while fetching movements'}, 400
-        
+
         return {
             'data': [movement.movement_to_json() for movement in movements]
         }, 200
-        

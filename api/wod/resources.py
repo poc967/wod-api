@@ -1,39 +1,44 @@
 from flask_restx import Namespace, Api, Resource
 from flask_restx import reqparse
 from ..models import wod, work_out, movement
-import json
 import ast
 
 api = Namespace('wod')
 
 
+def create_wod_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('name')
+    parser.add_argument('work_outs', action='append')
+    return parser
+
+
 @api.route('/')
 class Wod(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('name')
-        parser.add_argument('score')
-        parser.add_argument('work_outs', action='append')
+        parser = create_wod_parser()
         args = parser.parse_args()
 
-        new_wod = wod.Wod(name=args['name'], score=args['score'])
+        new_wod = wod.Wod(name=args['name'])
 
-        work_outs = args['work_outs']
-        for sub_work_out in work_outs:
-            sub_work_out = ast.literal_eval(sub_work_out)
+        work_out_components = args['work_outs']
+        for work_out_component in work_out_components:
+            work_out_component = ast.literal_eval(work_out_component)
 
-            new_work_out = work_out.WorkOut(
-                work_out_style=sub_work_out['work_out_style'],
-                time_cap=sub_work_out['time_cap'],
-                rounds=sub_work_out['rounds'] if sub_work_out.get(
+            new_work_out_component = work_out.WorkOut(
+                work_out_style=work_out_component['work_out_style'] if work_out_component.get(
+                    'work_out_style') else None,
+                time_cap=work_out_component['time_cap'] if work_out_component.get(
+                    'time_cap') else None,
+                rounds=work_out_component['rounds'] if work_out_component.get(
                     'rounds') else None,
-                score=sub_work_out['score'] if sub_work_out.get(
-                    'score') else None,
-                notes=sub_work_out['notes'] if sub_work_out.get(
+                notes=work_out_component['notes'] if work_out_component.get(
                     'notes') else None,
+                repititions=work_out_component['repititions'] if work_out_component.get(
+                    'repititions') else None
             )
 
-            for individual_movement in sub_work_out['movements']:
+            for individual_movement in work_out_component['movements']:
                 result_of_movement_query = movement.Movement.objects(
                     name=individual_movement['movement'].lower()).first()
                 if not result_of_movement_query:
@@ -45,20 +50,25 @@ class Wod(Resource):
                 else:
                     new_movement = result_of_movement_query.id
 
-                new_work_out['movements'].append(work_out.WorkOutMovement(
+                new_work_out_component['movements'].append(work_out.WorkOutMovement(
                     movement=new_movement,
-                    repititions=individual_movement['repititions'],
+                    repititions=individual_movement['repititions'] if individual_movement.get(
+                        'repititions') else None,
                     notes=individual_movement['notes'] if individual_movement.get(
                         'notes') else None,
                     weight=individual_movement['weight'] if individual_movement.get(
-                        'weight') else None
+                        'weight') else None,
+                    sets=individual_movement['sets'] if individual_movement.get(
+                        'sets') else None
                 )
                 )
 
-            new_work_out.save()
+            new_work_out_component.save()
 
-            new_wod['work_outs'].append(new_work_out.id)
+        return 201
 
-        new_wod.save()
+        #     new_wod['work_outs'].append(new_work_out_component.id)
 
-        return new_wod.wod_to_json(), 201
+        # new_wod.save()
+
+        # return new_wod.wod_to_json(), 201
