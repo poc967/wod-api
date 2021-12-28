@@ -13,7 +13,7 @@ def create_wod_parser():
     return parser
 
 
-@api.route('/')
+@api.route('')
 class Wod(Resource):
     def post(self):
         parser = create_wod_parser()
@@ -39,16 +39,8 @@ class Wod(Resource):
             )
 
             for individual_movement in work_out_component['movements']:
-                result_of_movement_query = movement.Movement.objects(
-                    name=individual_movement['movement'].lower()).first()
-                if not result_of_movement_query:
-                    new_movement = movement.Movement(
-                        name=individual_movement['movement'].lower()
-                    )
-                    new_movement.save()
-                    new_movement = new_movement.id
-                else:
-                    new_movement = result_of_movement_query.id
+                new_movement = movement.Movement.find_or_create_movement(
+                    individual_movement)
 
                 new_work_out_component['movements'].append(work_out.WorkOutMovement(
                     movement=new_movement,
@@ -65,10 +57,8 @@ class Wod(Resource):
 
             new_work_out_component.save()
 
-        return 201
+            new_wod['work_outs'].append(new_work_out_component.id)
 
-        #     new_wod['work_outs'].append(new_work_out_component.id)
+        new_wod.save()
 
-        # new_wod.save()
-
-        # return new_wod.wod_to_json(), 201
+        return new_wod.wod_to_json(), 201

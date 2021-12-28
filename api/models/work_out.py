@@ -51,7 +51,7 @@ class WorkOut(mongoengine.Document):
             'rounds': self.rounds if self.rounds else None,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],
             'repititions': self.repititions,
-            'notes': self.score,
+            'notes': self.notes,
             'created': self.created.strftime("%c")
         }
 
