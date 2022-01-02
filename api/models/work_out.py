@@ -31,11 +31,13 @@ class WorkOutMovement(mongoengine.EmbeddedDocument):
 
 
 class WorkOut(mongoengine.Document):
+    description = mongoengine.StringField()
     work_out_style = mongoengine.StringField(
         choices=['AMRAP', 'For Time', 'EMOM'])
     time_cap = mongoengine.StringField()
+    interval_time_domain = mongoengine.StringField()
     rounds = mongoengine.IntField()
-    repititions = mongoengine.StringField()
+    rep_scheme = mongoengine.StringField()
     movements = mongoengine.EmbeddedDocumentListField(WorkOutMovement)
     notes = mongoengine.StringField()
     is_deleted = mongoengine.BooleanField(default=False)
@@ -45,12 +47,14 @@ class WorkOut(mongoengine.Document):
 
         data = {
             'id': str(self.id),
+            'description': self.description,
             'work_out_style': self.work_out_style,
             'time_cap': self.time_cap,
+            'interval_time_domain': self.interval_time_domain,
             'is_deleted': self.is_deleted,
             'rounds': self.rounds if self.rounds else None,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],
-            'repititions': self.repititions,
+            'repititions': self.rep_scheme,
             'notes': self.notes,
             'created': self.created.strftime("%c")
         }
