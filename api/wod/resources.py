@@ -25,18 +25,50 @@ class Wod(Resource):
         for work_out_component in work_out_components:
             work_out_component = ast.literal_eval(work_out_component)
 
-            new_work_out_component = work_out.WorkOut(
-                work_out_style=work_out_component['work_out_style'] if work_out_component.get(
-                    'work_out_style') else None,
-                time_cap=work_out_component['time_cap'] if work_out_component.get(
-                    'time_cap') else None,
-                rounds=work_out_component['rounds'] if work_out_component.get(
-                    'rounds') else None,
-                notes=work_out_component['notes'] if work_out_component.get(
-                    'notes') else None,
-                repititions=work_out_component['repititions'] if work_out_component.get(
-                    'repititions') else None
-            )
+            # build dict for creating work out components
+            kwargs = {}
+            base_required_fields = [
+                'work_out_style', 'description', 'movements']
+
+            for field in base_required_fields:
+                if not work_out_component.get(field):
+                    return {
+                        'error': f'Missing required field {field}'
+                    }, 400
+                else:
+                    if field != 'movements':
+                        kwargs[field] = work_out_component[field]
+
+            secondary_required_fields = []
+
+            if work_out_component['work_out_style'] == 'AMRAP':
+                secondary_required_fields.extend(['time_cap'])
+            elif work_out_component['work_out_style'] == 'For Time':
+                secondary_required_fields.append('time_cap')
+            elif work_out_component['work_out_style'] == 'EMOM':
+                secondary_required_fields.extend(
+                    ['time_cap', 'interval_time_domain'])
+
+            for field in secondary_required_fields:
+                if not work_out_component.get(field):
+                    return {
+                        'error': f'Missing required field {field}'
+                    }, 400
+                else:
+                    kwargs[field] = work_out_component[field]
+
+            optional_fields = []
+
+            for field in work_out_component:
+                if field not in secondary_required_fields or base_required_fields:
+                    optional_fields.append(field)
+
+            if len(optional_fields) > 0:
+                for field in optional_fields:
+                    if field != 'movements':
+                        kwargs[field] = work_out_component[field]
+
+            new_work_out_component = work_out.WorkOut(**kwargs)
 
             for individual_movement in work_out_component['movements']:
                 new_movement = movement.Movement.find_or_create_movement(

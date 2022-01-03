@@ -33,7 +33,7 @@ class WorkOutMovement(mongoengine.EmbeddedDocument):
 class WorkOut(mongoengine.Document):
     description = mongoengine.StringField()
     work_out_style = mongoengine.StringField(
-        choices=['AMRAP', 'For Time', 'EMOM'])
+        choices=['AMRAP', 'For Time', 'EMOM', 'Other'])
     time_cap = mongoengine.StringField()
     interval_time_domain = mongoengine.StringField()
     rounds = mongoengine.IntField()
@@ -54,9 +54,13 @@ class WorkOut(mongoengine.Document):
             'is_deleted': self.is_deleted,
             'rounds': self.rounds if self.rounds else None,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],
-            'repititions': self.rep_scheme,
+            'rep_scheme': self.rep_scheme,
             'notes': self.notes,
             'created': self.created.strftime("%c")
         }
 
         return data
+
+    def create_new_workout(args):
+
+        return

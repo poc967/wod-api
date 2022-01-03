@@ -8,7 +8,6 @@ class Movement(mongoengine.Document):
     created = mongoengine.DateTimeField(default=datetime.datetime.now())
 
     def find_or_create_movement(args):
-        print(args)
         name = args['movement'].lower()
         result_of_movement_query = Movement.objects(
             name=name).first()
