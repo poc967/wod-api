@@ -74,18 +74,16 @@ class Wod(Resource):
                 new_movement = movement.Movement.find_or_create_movement(
                     individual_movement)
 
-                new_work_out_component['movements'].append(work_out.WorkOutMovement(
-                    movement=new_movement,
-                    repititions=individual_movement['repititions'] if individual_movement.get(
-                        'repititions') else None,
-                    notes=individual_movement['notes'] if individual_movement.get(
-                        'notes') else None,
-                    weight=individual_movement['weight'] if individual_movement.get(
-                        'weight') else None,
-                    sets=individual_movement['sets'] if individual_movement.get(
-                        'sets') else None
-                )
-                )
+                args = {
+                    'movement': new_movement,
+                    'repititions': individual_movement['repititions'] if individual_movement.get('repititions') else None,
+                    'notes': individual_movement['notes'] if individual_movement.get('notes') else None,
+                    'weight': individual_movement['weight'] if individual_movement.get('weight') else None,
+                    'sets': individual_movement['sets'] if individual_movement.get('sets') else None
+                }
+
+                new_work_out_component['movements'].append(
+                    work_out.WorkOutMovement(**args))
 
             new_work_out_component.save()
 

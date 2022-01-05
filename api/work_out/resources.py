@@ -1,4 +1,3 @@
-from os import name
 from flask_restx import Namespace, Api, Resource
 from flask_restx import reqparse
 from mongoengine.errors import NotUniqueError
