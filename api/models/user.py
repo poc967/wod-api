@@ -16,13 +16,16 @@ class User(mongoengine.Document, flask_login.UserMixin):
     email = mongoengine.StringField(unique=True)
     password = mongoengine.StringField()
     benchmark_lifts = mongoengine.ListField()
-    is_deleted = mongoengine.BooleanField(default=False)
+    profile_picture = mongoengine.StringField()
+    is_active = mongoengine.BooleanField(default=True)
     created = mongoengine.DateTimeField(default=datetime.datetime.now())
 
-    def user_loader(id):
-        found_user = User.objects(id=id).first()
+    def user_to_json(self):
+        data = {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'is_active': self.is_active
+        }
 
-        if not found_user:
-            return None
-        else:
-            return found_user
+        return data

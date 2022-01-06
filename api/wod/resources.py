@@ -2,6 +2,7 @@ from flask_restx import Namespace, Api, Resource
 from flask_restx import reqparse
 from ..models import wod, work_out, movement
 import ast
+import flask_login
 
 api = Namespace('wod')
 
@@ -15,6 +16,8 @@ def create_wod_parser():
 
 @api.route('')
 class Wod(Resource):
+
+    @flask_login.login_required
     def post(self):
         parser = create_wod_parser()
         args = parser.parse_args()
