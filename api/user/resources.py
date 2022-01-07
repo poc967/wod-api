@@ -1,4 +1,5 @@
 import flask_login
+from flask import request
 from flask_restx import reqparse
 from flask_restx import Namespace, Resource, Api
 from ..models import user
@@ -23,11 +24,10 @@ def login_user_parser():
     return parser
 
 
-@api.route('')
+@api.route('/')
 class CreateUser(Resource):
 
     def post(self):
-        from app import user_loader
         parser = create_user_parser()
         args = parser.parse_args()
 
@@ -58,6 +58,31 @@ class CreateUser(Resource):
         return {
             'data': new_user.user_to_json()
         }, 201
+
+
+@api.route('/<user_id>')
+@api.param('user_id', 'the user id')
+class UserById(Resource):
+
+    def delete(self, user_id):
+
+        if not user_id:
+            return {
+                'error': 'missing required parameter id'
+            }, 400
+
+        user_to_delete = user.User.objects(id=user_id).first()
+
+        if not user_to_delete:
+            return {
+                'error': 'user does not exist'
+            }, 400
+
+        user_to_delete.delete_user()
+
+        return {
+            'success': 'user successfully deleted'
+        }, 200
 
 
 @api.route('/logout')

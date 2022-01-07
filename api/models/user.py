@@ -20,8 +20,14 @@ class User(mongoengine.Document, flask_login.UserMixin):
     is_active = mongoengine.BooleanField(default=True)
     created = mongoengine.DateTimeField(default=datetime.datetime.now())
 
+    def delete_user(self):
+        self.is_active = False
+        self.save()
+        return
+
     def user_to_json(self):
         data = {
+            'id': str(self.id),
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
