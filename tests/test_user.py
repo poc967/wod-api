@@ -6,6 +6,7 @@ from api.user.controllers import create_user
 from api.models import user
 from app import create_app
 import flask
+import json
 
 
 class UserTestSuite(unittest.TestCase):
@@ -30,7 +31,17 @@ class UserTestSuite(unittest.TestCase):
 
                 # jsonify
                 (data, status) = response
-                self.assertEquals(status, 201)
+                self.assertEqual(status, 201)
+
+    def test_create_user_endpoint(self):
+        with self.app.test_client() as c:
+            new_user = user.User().save()
+            response = c.get(f'/api/users/{new_user.id}')
+            status = response.status
+            data = json.loads(response.data.decode('utf-8'))
+
+            self.assertEqual(status, '200 OK')
+            self.assertIsNotNone(data)
 
     def tearDown(self):
         user.User.drop_collection()

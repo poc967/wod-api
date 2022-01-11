@@ -10,6 +10,10 @@ import flask_login
 
 
 def create_app(test_mode=None):
+    """
+    application factory
+
+    """
     app = Flask(__name__)
     api = Api(app, prefix='/api')
     if app.env == 'Production':

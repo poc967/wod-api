@@ -39,6 +39,7 @@ class Wod(Resource):
                         'error': f'Missing required field {field}'
                     }, 400
                 else:
+                    # further processing is needed on movements therefore
                     if field != 'movements':
                         kwargs[field] = work_out_component[field]
 

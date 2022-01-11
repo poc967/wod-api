@@ -66,6 +66,24 @@ class UserById(Resource):
             'success': 'user successfully deleted'
         }, 200
 
+    def get(self, user_id):
+
+        if not user_id:
+            return {
+                'error': 'missing required parameter id'
+            }, 400
+
+        found_user = user.User.objects(id=user_id).first()
+
+        if not found_user:
+            return {
+                'error': 'no user found'
+            }, 400
+
+        return {
+            'data': found_user.user_to_json()
+        }, 200
+
 
 @api.route('/logout')
 class LogOutUser(Resource):
