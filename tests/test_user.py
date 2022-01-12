@@ -68,6 +68,19 @@ class UserTestSuite(unittest.TestCase):
 
             self.assertEqual(status, '400 BAD REQUEST')
 
+    def test_create_user_fail_duplicate_email(self):
+        with self.app.test_client() as c:
+            new_user = user.User(**self.valid_user_data)
+            new_user.save()
+            response = c.post('/api/users', data=self.valid_user_data)
+            status = response.status
+            data = response.data.decode('utf-8')
+            data = json.loads(data)
+
+            self.assertEqual(status, '400 BAD REQUEST')
+            self.assertEqual(
+                data['error'], 'user associated with this email (test@testuser.io) already exists')
+
     def tearDown(self):
         user.User.drop_collection()
 
