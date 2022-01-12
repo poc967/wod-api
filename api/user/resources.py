@@ -32,10 +32,10 @@ class CreateUser(Resource):
         parser = create_user_parser()
         args = parser.parse_args()
 
-        # if not args['email'] or args['first_name'] or args['last_name'] or args['password']:
-        #     return {
-        #         'error': 'missing required arguments'
-        #     }, 400
+        if not args.get('email') or not args.get('first_name') or not args.get('last_name') or not args.get('password'):
+            return {
+                'error': 'missing required arguments'
+            }, 400
 
         response = create_user(args)
 
