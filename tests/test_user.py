@@ -28,6 +28,21 @@ class UserTestSuite(unittest.TestCase):
             "password": "supersecret"
         }
 
+        self.valid_login_data = {
+            "email": "test@testuser.io",
+            "password": "supersecret"
+        }
+
+        self.invalid_login_data_password_bad = {
+            "email": "test@testuser.io",
+            "password": "supersecret1"
+        }
+
+        self.invalid_login_data_missing_user = {
+            "email": "test_user_doesnt_exist@testuser.io",
+            "password": "supersecret1"
+        }
+
         return
 
     def test_create_user_success(self):
@@ -80,6 +95,21 @@ class UserTestSuite(unittest.TestCase):
             self.assertEqual(status, '400 BAD REQUEST')
             self.assertEqual(
                 data['error'], 'user associated with this email (test@testuser.io) already exists')
+
+    def test_user_login_successful(self):
+        with self.app.app_context():
+            with self.app.test_request_context():
+                with self.app.test_client() as c:
+                    new_user = c.post('/api/users', data=self.valid_user_data)
+
+                    response = c.post('/api/users/login',
+                                      data=self.valid_login_data)
+                    status = response.status
+                    data = response.data.decode('utf-8')
+                    data = json.loads(data)
+                    self.assertEqual(status, '200 OK')
+
+    # def test_user_login_fail(self):
 
     def tearDown(self):
         user.User.drop_collection()
