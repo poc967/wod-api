@@ -109,7 +109,30 @@ class UserTestSuite(unittest.TestCase):
                     data = json.loads(data)
                     self.assertEqual(status, '200 OK')
 
-    # def test_user_login_fail(self):
+    def test_user_login_fail(self):
+        with self.app.app_context():
+            with self.app.test_request_context():
+                with self.app.test_client() as c:
+                    new_user = c.post('/api/users', data=self.valid_user_data)
+
+                    response = c.post('/api/users/login',
+                                      data=self.invalid_login_data_password_bad)
+                    status = response.status
+                    data = response.data.decode('utf-8')
+                    data = json.loads(data)
+                    self.assertEqual(status, '401 UNAUTHORIZED')
+
+    def test_user_login_fail_no_user(self):
+        with self.app.app_context():
+            with self.app.test_request_context():
+                with self.app.test_client() as c:
+
+                    response = c.post('/api/users/login',
+                                      data=self.invalid_login_data_password_bad)
+                    status = response.status
+                    data = response.data.decode('utf-8')
+                    data = json.loads(data)
+                    self.assertEqual(status, '400 BAD REQUEST')
 
     def tearDown(self):
         user.User.drop_collection()

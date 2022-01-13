@@ -108,7 +108,7 @@ class LogInUser(Resource):
         if not user_to_authenticate:
             return {
                 'error': 'user does not exist with this email'
-            }, 401
+            }, 400
 
         result = bcrypt.checkpw(
             args['password'].encode('utf-8'), user_to_authenticate.password.encode('utf-8'))
