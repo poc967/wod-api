@@ -7,6 +7,7 @@ from api.movement.resources import api as movements
 from api.user.resources import api as users
 from api.models import user
 import flask_login
+from flask_cors import CORS
 
 
 def create_app(test_mode=None):
@@ -16,7 +17,8 @@ def create_app(test_mode=None):
     """
     app = Flask(__name__)
     api = Api(app, prefix='/api')
-    if app.env == 'Production':
+    CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+    if app.env == 'production':
         app.config['MONGODB_SETTINGS'] = {
             "db": "wod-api",
             "host": "mongodb://localhost:27017/wod-api"
@@ -40,13 +42,20 @@ def create_app(test_mode=None):
     api.add_namespace(users, path='/users')
 
     @login_manager.user_loader
-    def user_loader(id):
-        found_user = user.User.objects(id=id).first()
+    def user_loader(user_id):
+        found_user = user.User.objects(id=user_id).first()
 
         if not found_user:
             return None
         else:
             return found_user
+
+    # @login_manager.unauthorized_handler
+    # def unauthorized():
+    #     return None
+
+    # @login_manager.request_loader
+    # def request_loader():
 
     if __name__ == '__main__':
         app.run(debug=True)

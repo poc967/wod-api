@@ -5,7 +5,7 @@ import datetime
 # TODO add model for benchmark lifts
 
 
-class User(mongoengine.Document, flask_login.UserMixin):
+class User(mongoengine.Document, flask_login.UserMixin, flask_login.AnonymousUserMixin):
     first_name = mongoengine.StringField()
     last_name = mongoengine.StringField()
     age = mongoengine.IntField()
@@ -19,6 +19,10 @@ class User(mongoengine.Document, flask_login.UserMixin):
     profile_picture = mongoengine.StringField()
     is_active = mongoengine.BooleanField(default=True)
     created = mongoengine.DateTimeField(default=datetime.datetime.now())
+
+    @property
+    def is_authenticated(self):
+        return True
 
     def delete_user(self):
         self.is_active = False

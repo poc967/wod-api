@@ -42,6 +42,24 @@ class CreateUser(Resource):
         return response
 
 
+@api.route('/current_user')
+class GetCurrentUser(Resource):
+
+    # @flask_login.login_required
+    def get(self):
+        user = flask_login.current_user
+        print(user.is_authenticated, type(user))
+
+        if not user.is_authenticated:
+            return {
+                'error': 'user not authed'
+            }, 401
+        else:
+            return {
+                'data': user.user_to_json()
+            }, 200
+
+
 @api.route('/<user_id>')
 @api.param('user_id', 'the user id')
 class UserById(Resource):
