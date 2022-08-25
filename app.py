@@ -8,6 +8,9 @@ from api.user.resources import api as users
 from api.models import user
 import flask_login
 from flask_cors import CORS
+from logging.config import dictConfig
+import pythonjsonlogger
+import logging
 
 
 def create_app(test_mode=None):
@@ -41,6 +44,46 @@ def create_app(test_mode=None):
     api.add_namespace(work_outs, path='/work-out')
     api.add_namespace(users, path='/users')
 
+    dictConfig({
+        'version': 1,
+        'formatters': {
+            'json': {
+                'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            },
+            'simple': {
+                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            }
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple',
+                'level': 'INFO'
+            },
+            'file': {
+                'class': 'logging.FileHandler',
+                'formatter': 'json',
+                'filename': 'newlog.json',
+                'level': 'INFO'
+            },
+        },
+        'loggers': {
+            'my-logger': {
+                'level': 'ERROR',
+                'handlers': ['file']
+            },
+            'werkzeug': {
+                'level': 'INFO',
+                'handlers': ['console']
+            }
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['console', 'file']
+        },
+    })
+
     @login_manager.user_loader
     def user_loader(user_id):
         found_user = user.User.objects(id=user_id).first()
@@ -58,6 +101,6 @@ def create_app(test_mode=None):
     # def request_loader():
 
     if __name__ == '__main__':
-        app.run(debug=True)
+        app.run(debug=True, port=5003)
 
     return app

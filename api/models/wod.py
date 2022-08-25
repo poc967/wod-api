@@ -8,20 +8,15 @@ def get_work_out_object(work_out_id):
 
 
 class Wod(mongoengine.Document):
-    name = mongoengine.StringField()
+    title = mongoengine.StringField()
     date = mongoengine.DateField()
     work_outs = mongoengine.ListField(mongoengine.ReferenceField('WorkOut'))
 
     def wod_to_json(self):
-        work_out_documents = []
-        for ids in self.work_outs:
-            document = get_work_out_object(ids)
-            work_out_documents.append(document)
-
         data = {
-            'name': self.name,
+            'title': self.title,
             'date': self.date,
-            'work_outs': [work_out_document.work_out_to_json() for work_out_document in work_out_documents]
+            'work_outs': [work_out_document.work_out_to_json() for work_out_document in self.work_outs]
         }
 
-        return {'data': data}, 200
+        return data

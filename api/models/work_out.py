@@ -48,13 +48,8 @@ class WorkOut(mongoengine.Document):
         data = {
             'id': str(self.id),
             'description': self.description,
-            'work_out_style': self.work_out_style,
-            'time_cap': self.time_cap,
-            'interval_time_domain': self.interval_time_domain,
             'is_deleted': self.is_deleted,
-            'rounds': self.rounds if self.rounds else None,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],
-            'rep_scheme': self.rep_scheme,
             'notes': self.notes,
             'created': self.created.strftime("%c")
         }
