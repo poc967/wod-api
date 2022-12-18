@@ -44,45 +44,45 @@ def create_app(test_mode=None):
     api.add_namespace(work_outs, path='/work-out')
     api.add_namespace(users, path='/users')
 
-    dictConfig({
-        'version': 1,
-        'formatters': {
-            'json': {
-                'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
-                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            },
-            'simple': {
-                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            }
-        },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'simple',
-                'level': 'INFO'
-            },
-            'file': {
-                'class': 'logging.FileHandler',
-                'formatter': 'json',
-                'filename': 'newlog.json',
-                'level': 'INFO'
-            },
-        },
-        'loggers': {
-            'my-logger': {
-                'level': 'ERROR',
-                'handlers': ['file']
-            },
-            'werkzeug': {
-                'level': 'INFO',
-                'handlers': ['console']
-            }
-        },
-        'root': {
-            'level': 'INFO',
-            'handlers': ['console', 'file']
-        },
-    })
+    # dictConfig({
+    #     'version': 1,
+    #     'formatters': {
+    #         'json': {
+    #             'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+    #             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    #         },
+    #         'simple': {
+    #             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    #         }
+    #     },
+    #     'handlers': {
+    #         'console': {
+    #             'class': 'logging.StreamHandler',
+    #             'formatter': 'simple',
+    #             'level': 'INFO'
+    #         },
+    #         'file': {
+    #             'class': 'logging.FileHandler',
+    #             'formatter': 'json',
+    #             'filename': 'newlog.json',
+    #             'level': 'INFO'
+    #         },
+    #     },
+    #     'loggers': {
+    #         'my-logger': {
+    #             'level': 'ERROR',
+    #             'handlers': ['file']
+    #         },
+    #         'werkzeug': {
+    #             'level': 'INFO',
+    #             'handlers': ['console']
+    #         }
+    #     },
+    #     'root': {
+    #         'level': 'INFO',
+    #         'handlers': ['console', 'file']
+    #     },
+    # })
 
     @login_manager.user_loader
     def user_loader(user_id):

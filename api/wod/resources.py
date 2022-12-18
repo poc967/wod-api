@@ -31,3 +31,9 @@ class Wod(Resource):
 
         results = wod.Wod.objects()
         return [result.wod_to_json() for result in results]
+
+
+@api.route('/<current_time>')
+@api.parem('current_time', 'current time from client')
+class WodByTime(Resource):
+    def get(self, current_time):

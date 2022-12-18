@@ -1,9 +1,10 @@
 from ..models import wod, work_out, movement
 import ast
+import datetime
 
 
 def create_wod(args):
-    new_wod = wod.Wod(title=args['title'])
+    new_wod = wod.Wod(title=args['title'], date=datetime.datetime.now())
 
     for component in args['workoutComponents']:
         component = ast.literal_eval(component)
@@ -35,3 +36,9 @@ def create_wod(args):
 
     new_wod.save()
     return new_wod.wod_to_json(), 201
+
+
+def get_wods(timestamp=None):
+    query = {}
+    if timestamp:
+        query.update({})

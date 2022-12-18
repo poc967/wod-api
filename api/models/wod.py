@@ -15,8 +15,8 @@ class Wod(mongoengine.Document):
     def wod_to_json(self):
         data = {
             'title': self.title,
-            'date': self.date,
-            'work_outs': [work_out_document.work_out_to_json() for work_out_document in self.work_outs]
+            'date': str(self.date),
+            'work_outs': [get_work_out_object(work_out_document).work_out_to_json() for work_out_document in self.work_outs]
         }
 
         return data
