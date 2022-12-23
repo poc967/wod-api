@@ -1,10 +1,12 @@
 from ..models import wod, work_out, movement
 import ast
 import datetime
+from flask_login import current_user
 
 
 def create_wod(args):
-    new_wod = wod.Wod(title=args['title'], date=datetime.datetime.now())
+    new_wod = wod.Wod(
+        title=args['title'], date=datetime.datetime.now(), users=[current_user])
 
     for component in args['workoutComponents']:
         component = ast.literal_eval(component)
@@ -46,7 +48,8 @@ def get_wods(timestamp=None):
     end = start + datetime.timedelta(1)
 
     try:
-        wods = wod.Wod.objects(date__gte=start, date__lt=end).all()
+        wods = wod.Wod.objects(
+            date__gte=start, date__lt=end, users__in=[current_user]).all()
         return {'data': [wod.wod_to_json() for wod in wods], 'count': len(wods)}
     except Exception as e:
         return {'error': str(e)}, 400

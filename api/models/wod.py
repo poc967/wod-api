@@ -11,6 +11,7 @@ def get_work_out_object(work_out_id):
 class Wod(mongoengine.Document):
     title = mongoengine.StringField()
     date = mongoengine.DateField()
+    users = mongoengine.ListField(mongoengine.ReferenceField('User'))
     work_outs = mongoengine.ListField(mongoengine.ReferenceField('WorkOut'))
 
     def wod_to_json(self):
