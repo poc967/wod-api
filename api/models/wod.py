@@ -1,5 +1,6 @@
 import mongoengine
 from api.models import movement, work_out
+import datetime
 
 
 def get_work_out_object(work_out_id):
@@ -10,13 +11,15 @@ def get_work_out_object(work_out_id):
 class Wod(mongoengine.Document):
     title = mongoengine.StringField()
     date = mongoengine.DateField()
+    users = mongoengine.ListField(mongoengine.ReferenceField('User'))
     work_outs = mongoengine.ListField(mongoengine.ReferenceField('WorkOut'))
 
     def wod_to_json(self):
+        print(self.work_outs)
         data = {
             'title': self.title,
-            'date': self.date,
-            'work_outs': [work_out_document.work_out_to_json() for work_out_document in self.work_outs]
+            'date': self.date.strftime("%c"),
+            'work_outs': [get_work_out_object(work_out_document.id).work_out_to_json() for work_out_document in self.work_outs]
         }
 
         return data

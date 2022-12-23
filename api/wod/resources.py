@@ -16,7 +16,14 @@ def create_wod_parser():
     return parser
 
 
-@api.route('')
+def get_time_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('time_stamp', type=int, location='args')
+    return parser
+
+
+@api.route('', '/', '/<int:time_stamp>')
+@api.param('time_stamp', 'unix time stamp')
 class Wod(Resource):
 
     @flask_login.login_required
@@ -27,7 +34,14 @@ class Wod(Resource):
         return controllers.create_wod(args)
 
     @flask_login.login_required
-    def get(self):
+    def get(self, time_stamp):
 
-        results = wod.Wod.objects()
-        return [result.wod_to_json() for result in results]
+        return controllers.get_wods(time_stamp)
+
+
+# @api.route('/<current_time>')
+# @api.param('current_time', 'current time from client')
+# class WodByTime(Resource):
+#     def get(self, current_time):
+
+#         return controllers.get_wods(current_time)
