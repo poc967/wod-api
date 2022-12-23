@@ -35,10 +35,18 @@ def create_wod(args):
         new_wod.work_outs.append(new_work_out_movement.id)
 
     new_wod.save()
+    new_wod.reload()
     return new_wod.wod_to_json(), 201
 
 
 def get_wods(timestamp=None):
-    query = {}
-    if timestamp:
-        query.update({})
+    today = datetime.date.fromtimestamp(timestamp)
+    start = datetime.datetime(today.year, today.month,
+                              today.day, 0).astimezone()
+    end = start + datetime.timedelta(1)
+
+    try:
+        wods = wod.Wod.objects(date__gte=start, date__lt=end).all()
+        return {'data': [wod.wod_to_json() for wod in wods], 'count': len(wods)}
+    except Exception as e:
+        return {'error': str(e)}, 400
