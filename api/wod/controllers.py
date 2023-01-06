@@ -5,8 +5,10 @@ from flask_login import current_user
 
 
 def create_wod(args):
+    date = datetime.datetime.strptime(
+        args['date'], "%Y-%m-%dT%H:%M:%S.%fZ") if args.get('date') else None
     new_wod = wod.Wod(
-        title=args['title'], date=datetime.datetime.now(), users=[current_user])
+        title=args['title'], date=date if args.get('date') else None, users=[current_user])
 
     for component in args['workoutComponents']:
         component = ast.literal_eval(component)
@@ -18,8 +20,8 @@ def create_wod(args):
 
             new_workout_movement_args = {
                 'movement': new_movement.id,
-                'repititions': single_movement['repititions'],
-                'weight': single_movement['weight']
+                'repititions': single_movement['repititions'] if single_movement.get('repititions') else None,
+                'weight': single_movement['weight'] if single_movement.get('weight') else None
             }
 
             movements.append(work_out.WorkOutMovement(
