@@ -15,10 +15,9 @@ class Wod(mongoengine.Document):
     work_outs = mongoengine.ListField(mongoengine.ReferenceField('WorkOut'))
 
     def wod_to_json(self):
-        print(self.work_outs)
         data = {
             'title': self.title,
-            'date': self.date.strftime("%c"),
+            'date': self.date.strftime("%c") if self.date else None,
             'work_outs': [get_work_out_object(work_out_document.id).work_out_to_json() for work_out_document in self.work_outs]
         }
 

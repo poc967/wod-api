@@ -12,6 +12,7 @@ api = Namespace('wod')
 def create_wod_parser():
     parser = reqparse.RequestParser()
     parser.add_argument('title')
+    parser.add_argument('date')
     parser.add_argument('workoutComponents', action='append')
     return parser
 
