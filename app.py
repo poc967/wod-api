@@ -11,6 +11,8 @@ from flask_cors import CORS
 from logging.config import dictConfig
 import pythonjsonlogger
 import logging
+from dotenv import load_dotenv
+import os
 
 
 def create_app(test_mode=None):
@@ -18,6 +20,7 @@ def create_app(test_mode=None):
     application factory
 
     """
+    load_dotenv()
     app = Flask(__name__)
     api = Api(app, prefix='/api')
     CORS(app, origins=['http://localhost:3000'], supports_credentials=True)

@@ -4,7 +4,8 @@ from flask_restx import reqparse
 from flask_restx import Namespace, Resource, Api
 from ..models import user
 import bcrypt
-from .controllers import create_user
+from .controllers import create_user, update_user
+from werkzeug.datastructures import FileStorage
 
 api = Namespace('users')
 
@@ -22,6 +23,13 @@ def login_user_parser():
     parser = reqparse.RequestParser()
     parser.add_argument('email')
     parser.add_argument('password')
+    return parser
+
+
+def update_user_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('image', location='files',
+                        type=FileStorage, required=False)
     return parser
 
 
@@ -101,6 +109,17 @@ class UserById(Resource):
         return {
             'data': found_user.user_to_json()
         }, 200
+
+    @flask_login.login_required
+    def put(self, user_id):
+        parser = update_user_parser()
+        args = parser.parse_args()
+
+        if not args:
+            return {
+                'error': 'missing required parameters'
+            }, 400
+        return update_user(args)
 
 
 @api.route('/logout')

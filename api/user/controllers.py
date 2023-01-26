@@ -1,6 +1,8 @@
 from ..models import user
 import flask_login
 import bcrypt
+import boto3
+import io
 
 
 def create_user(args):
@@ -31,3 +33,13 @@ def create_user(args):
     return {
         'data': new_user.user_to_json()
     }, 201
+
+
+def update_user(args):
+    s3 = boto3.client('s3')
+    file = args['image'].read()
+    bytes = io.BytesIO(file)
+
+    url = s3.upload_fileobj(
+        bytes, 'wod-tracker-profile', 'key')
+    return url
