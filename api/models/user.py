@@ -35,7 +35,8 @@ class User(mongoengine.Document, flask_login.UserMixin, flask_login.AnonymousUse
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
-            'is_active': self.is_active
+            'is_active': self.is_active,
+            'profile_picture': self.profile_picture
         }
 
         return data

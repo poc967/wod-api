@@ -119,7 +119,7 @@ class UserById(Resource):
             return {
                 'error': 'missing required parameters'
             }, 400
-        return update_user(args)
+        return update_user(args, user_id)
 
 
 @api.route('/logout')
