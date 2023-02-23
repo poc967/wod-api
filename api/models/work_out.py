@@ -26,11 +26,12 @@ class WorkOutMovement(mongoengine.EmbeddedDocument):
             'repititions': self.repititions,
             'sets': self.sets,
             'weight': self.weight,
-            'notes': self.notes
+            'notes': self.notes,
         }
 
 
 class WorkOut(mongoengine.Document):
+    title = mongoengine.StringField()
     description = mongoengine.StringField()
     work_out_style = mongoengine.StringField(
         choices=['AMRAP', 'For Time', 'EMOM', 'Other'])
@@ -47,6 +48,7 @@ class WorkOut(mongoengine.Document):
 
         data = {
             'id': str(self.id),
+            'title': self.title,
             'description': self.description,
             'is_deleted': self.is_deleted,
             'movements': [movement.work_out_movement_to_json() for movement in self.movements],

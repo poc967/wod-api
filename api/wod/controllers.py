@@ -30,7 +30,8 @@ def create_wod(args):
         component_args = {
             'description': component['description'],
             'notes': component['notes'],
-            'movements': movements
+            'movements': movements,
+            'title': component['title']
         }
 
         new_work_out_movement = work_out.WorkOut(**component_args)
