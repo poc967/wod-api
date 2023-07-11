@@ -33,6 +33,8 @@ class WorkOutMovement(mongoengine.EmbeddedDocument):
 class WorkOut(mongoengine.Document):
     title = mongoengine.StringField()
     description = mongoengine.StringField()
+    results = mongoengine.StringField(choices=['weight', 'time', 'amrap'])
+    result_sets = mongoengine.StringField()
     work_out_style = mongoengine.StringField(
         choices=['AMRAP', 'For Time', 'EMOM', 'Other'])
     time_cap = mongoengine.StringField()
