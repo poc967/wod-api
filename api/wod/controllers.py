@@ -10,38 +10,18 @@ def create_wod(args):
     new_wod = wod.Wod(
         title=args['title'], date=date if args.get('date') else None, users=[current_user])
 
-    for component in args['workoutComponents']:
-        component = ast.literal_eval(component)
-        movements = []
-
-        for single_movement in component['movements']:
-            new_movement = movement.Movement.find_or_create_movement(
-                single_movement['movement'])
-
-            new_workout_movement_args = {
-                'movement': new_movement.id,
-                'repititions': single_movement['repititions'] if single_movement.get('repititions') else None,
-                'weight': single_movement['weight'] if single_movement.get('weight') else None
-            }
-
-            movements.append(work_out.WorkOutMovement(
-                **new_workout_movement_args))
-
-        component_args = {
-            'description': component['description'],
-            'notes': component['notes'],
-            'movements': movements,
-            'title': component['title']
-        }
-
-        new_work_out_movement = work_out.WorkOut(**component_args)
-        new_work_out_movement.save()
-
-        new_wod.work_outs.append(new_work_out_movement.id)
+    for workout in args['workoutComponents']:
+        dict = ast.literal_eval(workout)
+        new_workout_component = work_out.WorkOut(
+            description=dict.get('data'),
+            results=dict.get('resultType').lower(),
+            result_sets=str(dict.get('resultSets'))
+        )
+        new_workout_component.save()
+        new_wod.work_outs.append(new_workout_component)
 
     new_wod.save()
-    new_wod.reload()
-    return new_wod.wod_to_json(), 201
+    return {'message': 'success'}, 201
 
 
 def get_wods(timestamp=None):
