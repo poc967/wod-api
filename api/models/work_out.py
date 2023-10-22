@@ -63,3 +63,9 @@ class WorkOut(mongoengine.Document):
     def create_new_workout(args):
 
         return
+
+
+class Result(mongoengine.Document):
+    workout_id = mongoengine.ReferenceField('WorkOut')
+    results = mongoengine.ListField(mongoengine.StringField())
+    notes = mongoengine.StringField()

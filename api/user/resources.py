@@ -56,7 +56,6 @@ class GetCurrentUser(Resource):
     # @flask_login.login_required
     def get(self):
         user = flask_login.current_user
-        print(user.is_authenticated, type(user))
 
         if not user.is_authenticated:
             return {

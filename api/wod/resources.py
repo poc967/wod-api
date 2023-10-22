@@ -39,7 +39,6 @@ class Wod(Resource):
 
         return controllers.get_wods(time_stamp)
 
-
 # @api.route('/<current_time>')
 # @api.param('current_time', 'current time from client')
 # class WodByTime(Resource):
